@@ -1,14 +1,29 @@
 module.exports = function solveSudoku(matrix) {
   // your solution
+var step = 0;
   var emptySpot, possible;
+  var possArrData;
+  var possArr = [
+    [6, 5, 0, 7, 3, 0, 0, 8, 0],
+    [0, 0, 0, 4, 8, 0, 5, 3, 0],
+    [8, 4, 0, 9, 2, 5, 0, 0, 0],
+    [0, 9, 0, 8, 0, 0, 0, 0, 0],
+    [5, 3, 0, 2, 0, 9, 6, 0, 0],
+    [0, 0, 6, 0, 0, 0, 8, 0, 0],
+    [0, 0, 9, 0, 0, 0, 0, 0, 6],
+    [0, 0, 7, 0, 0, 0, 0, 5, 0],
+    [1, 6, 5, 3, 9, 0, 4, 7, 0]
+  ];
 do{
+ 
   emptySpot = false;
   possible = false;
   for (var row = 0; row < 9; row++){
     for (var col = 0; col < 9; col++){
       if(matrix[row][col] == 0){
         emptySpot = true;
-        var inField = [];
+        var inField;
+        inField = [];
         
         
         for(var i=0; i<9; i++){
@@ -27,6 +42,7 @@ do{
         //console.log(inField);
         //поиск в массиве поля значимости
         var maybeNum = [];
+         
         for (var k = 1; k < 10; k++){
           if (inField.indexOf(k) < 0)
             maybeNum.push(k);
@@ -35,17 +51,54 @@ do{
         if (maybeNum.length == 1){
           matrix[row][col] = maybeNum[0];
           possible = true;
+          possArr[row][col] = 'erase';
+        }
+        else if (step > 2) {
+          possArr[row][col] =  maybeNum + " ";
           
+          possArrData = [];
+            for(var h=0; h<9; h++){
+              if (h != col){
+          possArrData.push(possArr[row][h]);
+              }
+              if (h != row){
+          possArrData.push(possArr[h][col]);
+        }
+            }
+        for(var q=0; q<3; q++){
+          for(var w=0; w<3; w++){
+          if( (sectRow + q) != row && (sectCol + w) != col){
+          possArrData.push(possArr[sectRow + q][sectCol + w])}}
         }
         
+        for (var p = 0; p < maybeNum.length; p++){
+          var possArrDataStr = possArrData + "";
+          var maybeNumStr = maybeNum[p] + "";
+          //console.log(row + ' ' + col)
+          //console.log(possArrDataStr.indexOf(maybeNumStr))
+          
+          if (possArrDataStr.indexOf(maybeNumStr) < 0){
+            matrix[row][col] = maybeNum[p];
+            possArr[row][col] = 'erase';
+          possible = true;
+          }
+        
+        }
+
+        }
         
       }
       
       
     }
-  }} while(emptySpot, possible);
+  }
+
+step = step + 1} while(step < 100);
+  
+ // console.log(possArr);
   //console.log(matrix);
  return matrix; 
 }
+
 
 
